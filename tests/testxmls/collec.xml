@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<DJ_PLAYLISTS Version="1.0.0">
+    <PRODUCT Name="rekordbox" Version="7.0.5" Company="AlphaTheta"/>
+    <COLLECTION Entries="1161">
+        <TRACK TrackID="55909356" Name="Thank You (MPH Remix)" Artist="Todd Edwards"
+            Composer="" Album="Thank You (MPH Remix)" Grouping="" Genre="Alternative/Indie Rock/Dance"
+            Kind="Fichier MP3" Size="9451676" TotalTime="234" DiscNumber="1"
+            TrackNumber="1" Year="2023" AverageBpm="132.00" DateAdded="2024-10-25"
+            BitRate="320" SampleRate="44100" Comments="" PlayCount="3" Rating="204"
+            Remixer="" Tonality="1A" Label="Defected Records" Mix="">
+            <TEMPO Inizio="0.035" Bpm="132.00" Metro="4/4" Battito="1"/>
+        </TRACK>
+        <TRACK TrackID="127122428" Name="Smooth Operator (House Remix - Sped Up)"
+            Artist="Stutter" Composer="" Album="Smooth Operator (House Remix - Sped Up)"
+            Grouping="" Genre="Electro/Techno/House" Kind="Fichier MP3" Size="5995903"
+            TotalTime="146" DiscNumber="1" TrackNumber="1" Year="2023" AverageBpm="134.74"
+            DateAdded="2024-10-25" BitRate="320" SampleRate="44100" Comments=""
+            Remixer="" Tonality="2A" Label="STUTTER" Mix="">
+            <TEMPO Inizio="0.053" Bpm="134.74" Metro="4/4" Battito="1"/>
+         </TRACK>
+        <TRACK TrackID="152468503" Name="Waiting" Artist="MPH/Katie Bosworth"
+            Composer="" Album="Waiting" Grouping="" Genre="Alternative/Indie Rock/Dance"
+            Kind="Fichier MP3" Size="10816482" TotalTime="264" DiscNumber="1"
+            TrackNumber="1" Year="2022" AverageBpm="135.00" DateAdded="2024-10-25"
+            BitRate="320" SampleRate="44100" Comments="" PlayCount="0" Rating="153"
+
+            Remixer="" Tonality="3A" Label="Wub Club Records" Mix="">
+            <TEMPO Inizio="0.051" Bpm="135.00" Metro="4/4" Battito="1"/>
+            <TEMPO Inizio="44.496" Bpm="135.00" Metro="4/4" Battito="1"/>
+            <TEMPO Inizio="224.941" Bpm="135.00" Metro="4/4" Battito="3"/>
+        </TRACK>
+        <TRACK TrackID="61120378" Name="Useless" Artist="MPH" Composer="" Album="Nova"
+            Grouping="" Genre="Electro/Dance" Kind="Fichier MP3" Size="8952686"
+            TotalTime="220" DiscNumber="1" TrackNumber="2" Year="2021" AverageBpm="132.00"
+            DateAdded="2024-10-25" BitRate="320" SampleRate="44100" Comments=""
+            Remixer="" Tonality="7B" Label="Night Bass Records" Mix="">
+            <TEMPO Inizio="0.066" Bpm="132.00" Metro="4/4" Battito="1"/>
+        </TRACK>
+        <TRACK TrackID="109098778" Name="Work (Original Mix)" Artist="Higgo"
+            Composer="" Album="&apos;95" Grouping="" Genre="Alternative/Indie Rock"
+            Kind="Fichier MP3" Size="10381720" TotalTime="254" DiscNumber="1"
+            TrackNumber="3" Year="2019" AverageBpm="136.00" DateAdded="2024-10-25"
+            BitRate="320" SampleRate="44100" Comments="" PlayCount="2" Rating="153"
+            Remixer="" Tonality="6A" Label="Rare Supply" Mix="">
+            <TEMPO Inizio="0.024" Bpm="136.00" Metro="4/4" Battito="1"/>
+            <TEMPO Inizio="0.907" Bpm="136.00" Metro="4/4" Battito="3"/>
+        </TRACK>
+    </COLLECTION>
+    <PLAYLISTS>
+        <NODE Type="0" Name="ROOT" Count="11">
+            <NODE Name="playlist 1" Type="1" KeyType="0" Entries="1">
+                <TRACK Key="61120378"/>
+            </NODE>
+            <NODE Name="group 1" Type="0" Count="2">
+                <NODE Name="playlist 2" Type="0" Count="11">
+                    <TRACK Key="109098778"/>
+                </NODE>
+                <NODE Name="playlist 3" Type="1" KeyType="0" Entries="2">
+                    <TRACK Key="55909356"/>
+                    <TRACK Key="127122428"/>
+                    <TRACK Key="61120378"/>
+
+                </NODE>
+            </NODE>
+        </NODE>
+    </PLAYLISTS>
+</DJ_PLAYLISTS>

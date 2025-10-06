@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "syncbox"
+version = "0.0.0"
+authors = ["Lindpy"]
+
+
+[tool.pytest.ini_options] 
+testpaths = ["tests"]      
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
