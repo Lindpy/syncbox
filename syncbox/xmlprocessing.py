@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-import pandas as pd
 import inspect
 from typing import Type
 import xml.etree.ElementTree as ET
@@ -14,23 +13,23 @@ def classdict(data: dict[str, str], class_: Type, mapping=ARGMAP) -> dict:
     cleandict = {}
     for K, v in data.items():
         k = K.lower()
+        if k in mapping:
+            k = mapping[k]
         if k in valid_keys:
-            if k in ARGMAP:
-                k = ARGMAP[k]
             cleandict[k] = v
     return cleandict
 
 
 class Track(BaseModel):
-    id: str | None = None
+    id: int | None = None
     name: str | None = None
     artist: str | None = None
     album: str | None = None
 
 
 class Playlistbranch(BaseModel):
-    track_ids: list[int] | None = []
     name: str
+    track_ids: list[int] | None = []
     leaves: list["Playlistbranch"] = []
 
     def get_cumulated_leaves_id(self):
@@ -45,9 +44,11 @@ class Playlistbranch(BaseModel):
 class Lib(BaseModel):
     tracks: list[Track] | None = None
     playlist: Playlistbranch | None = None
+    mapping: dict | None = None
+    model_config = {"arbitrary_types_allowed": True}
 
-    def __post_init__(self):
-        self.mapping = pd.DataFrame([{int(track.id): track} for track in self.tracks])
+    def model_post_init(self, __context=None):
+        self.mapping = {track.id: track for track in self.tracks}
 
 
 def xml_to_dict(elem):
