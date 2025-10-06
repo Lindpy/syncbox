@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tree Selection</title>
+    <style>
+        ul { list-style-type: none; }
+    </style>
+</head>
+<body>
+<h1>Select folders</h1>
+
+<form method="post">
+    <ul>
+        {% macro render_branch(branch) %}
+            <li>
+                <input type="checkbox" name="selected" value="{{ branch.name }}"> {{ branch.name }}
+                {% if branch.leaves %}
+                    <ul>
+                        {% for leaf in branch.leaves %}
+                            {{ render_branch(leaf) }}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endmacro %}
+        {{ render_branch(tree) }}
+    </ul>
+    <button type="submit">Select</button>
+</form>
+
+</body>
+</html>

@@ -31,7 +31,6 @@ class Playlistbranch(BaseModel):
     name: str
     track_ids: list[int] | None = []
     leaves: list["Playlistbranch"] = []
-
     def get_cumulated_leaves_id(self):
         self.leaves_ids = self.track_ids
         if not self.leaves:
