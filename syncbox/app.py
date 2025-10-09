@@ -1,49 +1,48 @@
-from fastapi import FastAPI, Request, Form
+import os
+import threading
+import time
+import webbrowser
+from pathlib import Path
+from typing import List
+
+import uvicorn
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from typing import List
-import os 
-
-app = FastAPI()
-templates = Jinja2Templates(directory="templates")  # folder where HTML lives
-
-
-from typing import List
 from pydantic import BaseModel
-
-class Branch(BaseModel):
-    name: str
-    data: str
-    leaves: List['Branch'] = []
-
-
-tree = Branch(
-    name="Root",
-    data="root_data",
-    leaves=[
-        Branch(name="Folder1", data="data1", leaves=[]),
-        Branch(
-            name="Folder2",
-            data="data2",
-            leaves=[
-                Branch(name="Subfolder1", data="data3", leaves=[]),
-                Branch(name="Subfolder2", data="data4", leaves=[]),
-            ],
-        ),
-    ],
-)
-
-
+from xmlprocessing import parse_xml_data
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, r"syncbox/templates"))
+folder  =r"C:\Users\lilia\src\syncbox\tests\testxmls"
+lib = parse_xml_data(folder=Path(folder))
+tree=lib.playlist
+breakpoint()
+
+
+app = FastAPI()
 
 
 @app.get("/", response_class=HTMLResponse)
 def read_tree(request: Request):
     return templates.TemplateResponse("tree.html", {"request": request, "tree": tree})
 
+
 @app.post("/", response_class=HTMLResponse)
 def get_selected(request: Request, selected: List[str] = Form(...)):
-    return templates.TemplateResponse("selected.html", {"request": request, "selected": selected})
+    return templates.TemplateResponse(
+        "selected.html", {"request": request, "selected": selected}
+    )
 
+
+def open_browser():
+    time.sleep(1)
+    webbrowser.open("http://127.0.0.1:8000")
+
+
+def syncbox_():
+    threading.Thread(target=open_browser, daemon=True).start()
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
+syncbox_()

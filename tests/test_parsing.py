@@ -1,7 +1,9 @@
-from syncbox.xmlprocessing import parse_xml_data
 from pathlib import Path
-from inline_snapshot import snapshot
+
 import pytest
+from inline_snapshot import snapshot
+
+from syncbox.xmlprocessing import parse_xml_data
 
 
 @pytest.fixture
