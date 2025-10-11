@@ -1,11 +1,16 @@
 import inspect
+import os
 import xml.etree.ElementTree as ET
+from datetime import datetime
 from pathlib import Path
 from typing import Type
 
+import pandas as pd
 from pydantic import BaseModel
 
+ROOT = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 XMLDIR = Path("xml_here")
+ARCHIVEDIR = Path("syncbox/archive_xml/")
 ARGMAP = {"trackid": "id"}
 
 
@@ -30,8 +35,10 @@ class Track(BaseModel):
 
 class Playlistbranch(BaseModel):
     name: str
+    db_id: int
     track_ids: list[int] | None = []
     leaves: list["Playlistbranch"] = []
+    fullname: str
 
     def get_cumulated_leaves_id(self):
         self.leaves_ids = self.track_ids
@@ -46,6 +53,7 @@ class Lib(BaseModel):
     tracks: list[Track] | None = None
     playlist: Playlistbranch | None = None
     mapping: dict | None = None
+    playlistdb: pd.DataFrame | None = None
     model_config = {"arbitrary_types_allowed": True}
 
     def model_post_init(self, __context=None):
@@ -78,16 +86,30 @@ def xml_to_dict(elem):
     return node
 
 
-def build_playlist_tree(playlistdict: dict) -> Playlistbranch:
+def build_playlist_tree(
+    playlistdict: dict,
+    playlistdb: pd.DataFrame | None = None,
+    rootname: str | None = None,
+) -> Playlistbranch:
+    if playlistdb is None:
+        playlistdb = pd.DataFrame(columns=["folder"])
+
     if "@attributes" not in playlistdict:
-        return build_playlist_tree(playlistdict["NODE"])
-    branch = Playlistbranch(name=playlistdict["@attributes"]["Name"])
+        return build_playlist_tree(playlistdict["NODE"], playlistdb)
+
+    id = playlistdb.shape[0] + 1
+    folder = playlistdict["@attributes"]["Name"]
+    fullpath = rootname + "-" + folder if rootname else folder
+    branch = Playlistbranch(name=folder, fullname=fullpath, db_id=id)
+    playlistdb.loc[id] = [branch]  # inplace modification
 
     if "NODE" in playlistdict:  # iterate per sub playlist
         if not isinstance(playlistdict["NODE"], list):
             playlistdict["NODE"] = [playlistdict["NODE"]]
         for leavedict in playlistdict["NODE"]:
-            branch.leaves.append(build_playlist_tree(leavedict))
+            branch.leaves.append(
+                build_playlist_tree(leavedict, rootname=fullpath, playlistdb=playlistdb)
+            )
 
     if "TRACK" in playlistdict:
         if not isinstance(playlistdict["TRACK"], list):
@@ -98,19 +120,40 @@ def build_playlist_tree(playlistdict: dict) -> Playlistbranch:
     return branch
 
 
-def parse_xml_data(folder=XMLDIR) -> Lib:
+def parse_xml_data(
+    folder: Path = Path(os.path.join(ROOT, XMLDIR)),
+    archivefolder: Path = Path(os.path.join(ROOT, ARCHIVEDIR)),
+) -> Lib:
     files = [f for f in folder.glob("*.xml")]
-    if len(files) != 1:
-        raise ValueError(f"{len(files)} xml files found in xml_here folder, expected 1")
-    tree = ET.parse(str(files[0]))
+    ctimes = [(os.path.getctime(file)) for file in files]
+    pairs = [[ctime, file] for ctime, file in zip(ctimes, files)]
+    pairs.sort()
+    if len(pairs) > 1:
+        for pair in pairs[:-1]:
+            oldfn = pair[1]
+            new_fn = "rblib-" + str(datetime.fromtimestamp(pair[0]).date()) + ".xml"
+            os.rename(
+                oldfn, os.path.join(archivefolder, new_fn)
+            )  # moving files to archive
+
+    tree = ET.parse(str(pairs[-1][1]))  # oldest one
     root = tree.getroot()
     data = {root.tag: xml_to_dict(root)}
     trackdicts = [
         track["@attributes"] for track in data["DJ_PLAYLISTS"]["COLLECTION"]["TRACK"]
     ]
-    playlist = build_playlist_tree(data["DJ_PLAYLISTS"]["PLAYLISTS"])
+    playlistdb = pd.DataFrame(columns=["folder"])
+    playlist = build_playlist_tree(
+        data["DJ_PLAYLISTS"]["PLAYLISTS"], playlistdb=playlistdb
+    )
     lib = Lib(
         tracks=[Track(**classdict(track, Track)) for track in trackdicts],
         playlist=playlist,
+        playlistdb=playlistdb,
     )
     return lib
+
+
+# def scan_xml():
+
+parse_xml_data()

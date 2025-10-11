@@ -2,22 +2,21 @@ import os
 import threading
 import time
 import webbrowser
-from pathlib import Path
 from typing import List
 
 import uvicorn
+from deezerapi import selected_to_deezer
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
 from xmlprocessing import parse_xml_data
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-templates = Jinja2Templates(directory=os.path.join(BASE_DIR, r"syncbox/templates"))
-folder  =r"C:\Users\lilia\src\syncbox\tests\testxmls"
-lib = parse_xml_data(folder=Path(folder))
-tree=lib.playlist
-breakpoint()
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+
+folder = r"C:\Users\lilia\src\syncbox\tests\testxmls"
+library = parse_xml_data()
+tree = library.playlist
 
 
 app = FastAPI()
@@ -30,6 +29,7 @@ def read_tree(request: Request):
 
 @app.post("/", response_class=HTMLResponse)
 def get_selected(request: Request, selected: List[str] = Form(...)):
+    selected_to_deezer(library, selected)
     return templates.TemplateResponse(
         "selected.html", {"request": request, "selected": selected}
     )

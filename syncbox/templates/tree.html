@@ -13,7 +13,7 @@
     <ul>
         {% macro render_branch(branch) %}
             <li>
-                <input type="checkbox" name="selected" value="{{ branch.name }}"> {{ branch.name }}
+                <input type="checkbox" name="selected" value="{{ branch.db_id}}"> {{ branch.name }}
                 {% if branch.leaves %}
                     <ul>
                         {% for leaf in branch.leaves %}
